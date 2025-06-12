@@ -1,4 +1,5 @@
-import { useEffect, useState } from 'react';
+import { useState, useEffect } from "react";
+import MapView from "./components/MapView";
 
 type Coordinates = {
   lat: number;
@@ -6,8 +7,8 @@ type Coordinates = {
 };
 
 const fallbackPosition: Coordinates = {
-  lat: 35.6997, // Azadi Square latitude
-  lng: 51.3375  // Azadi Square longitude
+  lat: 35.6997, // Azadi Square
+  lng: 51.3375,
 };
 
 function App() {
@@ -15,39 +16,34 @@ function App() {
 
   useEffect(() => {
     if (!navigator.geolocation) {
-      console.log("Geolocation not supported, using fallback.");
       setPosition(fallbackPosition);
     } else {
       navigator.geolocation.getCurrentPosition(
-        (pos: GeolocationPosition) => {
+        (pos) => {
           setPosition({
             lat: pos.coords.latitude,
-            lng: pos.coords.longitude
+            lng: pos.coords.longitude,
           });
         },
-        (err: GeolocationPositionError) => {
-          alert("Error getting location: " + err.message);
-          console.warn("Geolocation error:", err);
+        () => {
           setPosition(fallbackPosition);
         },
         {
           enableHighAccuracy: true,
           timeout: 5000,
-          maximumAge: 0
+          maximumAge: 0,
         }
       );
     }
   }, []);
 
   if (!position) {
-    return <p>Loading location...</p>;
+    return <p>Loading map...</p>;
   }
 
   return (
-    <div>
-      <h1>Your Location:</h1>
-      <p>Latitude: {position.lat}</p>
-      <p>Longitude: {position.lng}</p>
+    <div id="map" style={{height: "100vh"}}>
+      <MapView center={position} />
     </div>
   );
 }
