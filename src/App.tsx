@@ -41,11 +41,7 @@ function App() {
     return <p>Loading map...</p>;
   }
 
-  return (
-    <div id="map" style={{height: "100vh"}}>
-      <MapView center={position} />
-    </div>
-  );
+  return <MapView center={position} />;
 }
 
 export default App;

@@ -1,6 +1,12 @@
-import { MapContainer, TileLayer, Marker, Popup, useMap } from "react-leaflet";
+import {
+  MapContainer,
+  TileLayer,
+  Marker,
+  useMap,
+  Tooltip,
+} from "react-leaflet";
 import { useEffect } from "react";
-import { LatLngExpression } from "leaflet";
+import type { LatLngExpression } from "leaflet";
 import { useLocations } from "../hooks/useLocations";
 
 export type MapViewProps = {
@@ -9,7 +15,7 @@ export type MapViewProps = {
 
 const MapView = ({ center }: MapViewProps) => {
   const { locations, isLoading } = useLocations();
-  console.log(locations)
+  console.log(locations);
   const MapRefresher = ({ center }: { center: LatLngExpression }) => {
     const map = useMap();
 
@@ -31,17 +37,18 @@ const MapView = ({ center }: MapViewProps) => {
         attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
         url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
       />
-      <Marker position={center}>
-        <Popup>You are here (or somewhere close enough)</Popup>
-      </Marker>
-      <MapRefresher center={center} />
-      {!isLoading &&
-        locations?.slice(0, 10).map((loc: any) => (
-          <Marker key={loc.id} position={[loc.lat, loc.lng]}>
-            <Popup>{loc.name}</Popup>
+      {isLoading ? (
+        <Marker position={center}>
+          <Tooltip>میدان آزادی</Tooltip>
+        </Marker>
+      ) : (
+        locations?.slice(0, 10).map((location) => (
+          <Marker key={location.id} position={[location.lat, location.lng]}>
+            <Tooltip>{location.name}</Tooltip>
           </Marker>
         ))
-      }
+      )}
+      <MapRefresher center={center} />
     </MapContainer>
   );
 };
